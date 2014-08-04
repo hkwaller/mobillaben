@@ -1,0 +1,197 @@
+<div class="page page-dashboard" data-ng-controller="DashboardCtrl">
+    <div class="padding hidden-xs"></div>
+    <div class="row dashboard-stats">
+        <div class="col-lg-6 col-sm-6">
+            <section class="panel panel-box">
+                <div class="panel-left panel-item bg-belize">
+                    <i class="fa fa-tablet text-large stat-icon text-white"></i>
+                </div>
+                <div class="panel-right panel-item bg-reverse">
+                    <p class="size-h1 no-margin">{{ count }}<span class="size-h3">st</span></p>
+                    <p class="text-muted no-margin"><span>Utstyr</span></p>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-6 col-sm-6">
+            <section class="panel panel-box">
+                <div class="panel-left panel-item bg-pomme text-white">
+                    <i class="fa fa-tablet text-large stat-icon"></i>
+                </div>
+                <div class="panel-right panel-item bg-reverse">
+                    <p class="size-h1 no-margin">29<span class="size-h3">st</span></p>
+                    <p class="text-muted no-margin"><span>På utlån</span></p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row dashboard-stats">
+        <div class="col-lg-6">
+            <section class="panel panel-box no-margin">
+                <div class="panel-left panel-item bg-info hover-hand" ng-click="loanActive = !loanActive">
+                    <span><h3>Start nytt utlån</h3></span>
+                </div>
+            </section>
+            <section class="panel panel-default" ng-hide="loanActive">
+            <!--<div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Start nytt utlån</strong></div>-->
+            <div class="panel-body" data-ng-controller="TypeaheadCtrl">
+                <!--<div class="callout callout-info">
+                     <table>
+                    <tr>
+                        <td>Ustyr:</td>
+                        <td> {{selected}} </td>
+                    </tr>
+                    <tr>
+                        <td>Till: </td>
+                        <td>{{ loanee }} </td>
+                    </tr>
+                    <tr>
+                        <td>Telefonnummer:</td>
+                        <td> {{ phonenumber }}</td>
+                    </tr>
+                </table>
+                </div>-->
+               
+                <div class="row">
+                    <div class="col-sm-3">
+                        <input type="text" 
+                               ng-model="loan.selected"
+                               typeahead="state for state in states | filter:$viewValue"
+                               class="form-control"
+                               placeholder="Hva?">                    
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" 
+                               ng-model="loan.loanee"
+                               class="form-control"
+                               placeholder="Til hvem?">                    
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" 
+                               ng-model="loan.phonenumber"
+                               class="form-control"
+                               placeholder="Telefonnummer"> 
+                    </div>
+                    <button type="button" class="btn btn-success col-sm-9 col-lg-2" ng-click="startLoan(loan)">Registrer</button>
+
+                </div>
+            </div>
+</section>
+        </div>
+            <div class="padding hidden-lg"></div>
+
+        <div class="col-lg-6">
+            <section class="panel panel-box no-margin">
+               <div class="panel-left panel-item bg-danger hover-hand" ng-click="productActive = !productActive">
+                    <h3 class="text-white">Legg til nytt utstyr</h3></span>
+                </div>
+                
+            </section>
+    <section class="panel panel-default" ng-hide="productActive">
+        <!--<div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span>Nytt produkt</strong></div>-->
+        <div class="panel-body">
+            <form class="form-horizontal ng-pristine ng-valid">
+                <label for="" class="col-sm-2 text-left">Type</label>
+                <div class="form-group">
+                    <label class="ui-radio col-sm-2"><input name="radio1" type="radio" value="Telefon" ng-model="product.product" checked><span>Telefon</span></label>
+                    <label class="ui-radio col-sm-2"><input name="radio1" type="radio" value="Tablet" ng-model="product.product"><span>Tablet</span></label>
+                    <label class="ui-radio col-sm-2"><input name="radio1" type="radio" value="Annet" ng-model="product.product"><span>Annet</span></label>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2">Merke</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="product.brand">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2">Modell</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="product.type">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="" class="col-sm-2">Operativsystem</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" ng-model="product.os">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button" ng-click="add(product)">Legg til</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </section>
+        </div>
+    </div>
+    <div class="padding"></div>
+
+    <section>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> <span>Utstyr</span></strong></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Namn</th>
+                                <th>Typ</th>
+                                <th>OS</th>
+                                <th>Tillgänglig</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="e in list | orderByPriority">
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ e.brand }} {{ e.type }} </td>
+                                <td>{{ e.product }}</td>
+                                <td>{{ e.os }}</td>
+                                <td><span class="label label-success">{{ e.available }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> <span>På utlån</span></strong></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Namn</th>
+                                <th>Typ</th>
+                                <th>OS</th>
+                                <th>Tid på utlån</th>
+                                <th>Lånad av</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="e in loans | orderByPriority">
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ e.brand }} {{ e.type }}</td>
+                                <td>{{ e.product }}</td>
+                                <td>{{ e.os }}</td>
+                                <td>{{ daydiff(e.date, date) }}</td>
+                                <td>{{ e.loanee }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
+        </div>
+    </section>
+</div>
