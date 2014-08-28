@@ -35,45 +35,30 @@ function () {
             var FIREBASE_URI = 'https://mobillaben.firebaseio.com/';
             var ref = new Firebase(FIREBASE_URI + "/utstyr");
             var loan = new Firebase(FIREBASE_URI + "/loan");
-            $scope.list = $firebase(ref);
-            $scope.loans = $firebase(loan);
+            var sync = $firebase(ref);
+            var syncLoans = $firebase(loan);
             
-            var temp = angular.extend([], $scope.list);
+            var listarray = sync.$asArray();
+            $scope.list = listarray;
             
-            var listArray = [];
-            
-            $scope.list.$on('change', function() {
-                listArray.length = 0;
-                angular.extend(temp, $filter('orderByPriority')($scope.list));
-                for (var i = 0; i < temp.length; i++) {
-                    listArray.push(temp[i]);
-                }
-            });
+            var loanarray = syncLoans.$asArray();
+            $scope.loans = loanarray;
             
             $scope.productActive = true;
             $scope.loanActive = true;
             
-            $scope.count = 0;
-            var array = [];
-            
-            ref.on('value', function(snapshot) {
-               snapshot.forEach(function() {
-                   $scope.count++;
-                   array.push(snapshot.child("name").val());
-               });
-            });
-            
             $scope.add = function(product) {    
                 product.available = true;
                 $scope.list.$add(product);
-                $scope.count++;
                 $scope.product = {
                     product: null,
                     brand: null,
                     type: null,
                     os: null
                 }
+                $scope.productActive = false;
             }
+            
             $scope.parseDate = function(str) {
                 var mdy = str.split('/')
                 return new Date(mdy[2], mdy[0]-1, mdy[1]);
@@ -98,21 +83,32 @@ function () {
                 
                 var tempString = "";
                 
-                for (var i = 0; i < listArray.length; i++) {
-                    tempString = listArray[i].brand + " " + listArray[i].type;
+                for (var i = 0; i < $scope.list.length; i++) {
+                    tempString = $scope.list[i].brand + " " + $scope.list[i].type;
                     if (tempString === loan.selected) {
-                        listArray[i].available = false;
-                        listArray[i].loanee = loan.loanee;
-                        listArray[i].date = $scope.parseDate(new Date());
                         
-                        $scope.loans.$add(listArray[i]);
-                        var update = $scope.list.$child(listArray[i].$id);
-                        update.$set({available: false,
-                                     brand: listArray[i].brand,
-                                     os: listArray[i].os,
-                                     product: listArray[i].product,
-                                     type: listArray[i].type
-                                    });
+                        $scope.list[i].available = false;
+                        $scope.list.$save(i);
+                        $scope.list[i].loanee = loan.loanee;
+                        $scope.list[i].date = new Date();
+                        $scope.list[i].phonenumber = loan.phonenumber;
+                        
+                        loanarray.$add({available: false, 
+                                        brand: $scope.list[i].brand,
+                                        date: $scope.list[i].date,
+                                        loanee: loan.loanee,
+                                        os: $scope.list[i].os,
+                                        product: $scope.list[i].product,
+                                        type: $scope.list[i].type,
+                                        phonenumber: loan.phonenumber}).then(function(ref) {
+                           var id = ref.name();
+                        });
+                        $scope.loan = {
+                            selected: "",
+                            loanee: "",
+                            phonenumber: ""
+                        };
+                        $scope.loanActive = false;
                     }
                 }
             }
@@ -121,19 +117,19 @@ function () {
             function ($scope, $firebase, $filter) {
                 var FIREBASE_URI = 'https://mobillaben.firebaseio.com/';
                 var ref = new Firebase(FIREBASE_URI + "/utstyr");
+                var sync = $firebase(ref);
+
+                var listarray = sync.$asArray();
                 
-                var dataObj = $firebase(ref);
-                var temp = angular.extend([], dataObj);
                 $scope.states = [];
-                console.log(temp);
-                dataObj.$on('change', function() {
-                    $scope.states.length = 0;
-                    angular.extend(temp, $filter('orderByPriority')(dataObj));
-                    for (var i = 0; i < temp.length; i++) {
-                        $scope.states.push(temp[i].brand + " " + temp[i].type);
-                    }
-                });
                 
+                listarray.$loaded().then(function() {
+                    angular.forEach(listarray, function(rec) {
+                        if (rec.available === true) $scope.states.push(rec.brand + " " + rec.type);
+                    });                
+                });
+
+
                 $scope.selected = void 0; 
              
             }

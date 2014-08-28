@@ -7,7 +7,7 @@
                     <i class="fa fa-tablet text-large stat-icon text-white"></i>
                 </div>
                 <div class="panel-right panel-item bg-reverse">
-                    <p class="size-h1 no-margin">{{ count }}<span class="size-h3">st</span></p>
+                    <p class="size-h1 no-margin">{{ list.length }}<span class="size-h3">st</span></p>
                     <p class="text-muted no-margin"><span>Utstyr</span></p>
                 </div>
             </section>
@@ -19,7 +19,7 @@
                     <i class="fa fa-tablet text-large stat-icon"></i>
                 </div>
                 <div class="panel-right panel-item bg-reverse">
-                    <p class="size-h1 no-margin">29<span class="size-h3">st</span></p>
+                    <p class="size-h1 no-margin">{{ loans.length }} <span class="size-h3">st</span></p>
                     <p class="text-muted no-margin"><span>På utlån</span></p>
                 </div>
             </section>
@@ -92,12 +92,13 @@
         <!--<div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span>Nytt produkt</strong></div>-->
         <div class="panel-body">
             <form class="form-horizontal ng-pristine ng-valid">
-                <label for="" class="col-sm-2 text-left">Type</label>
-                <div class="form-group">
-                    <label class="ui-radio col-sm-2"><input name="radio1" type="radio" value="Telefon" ng-model="product.product" checked><span>Telefon</span></label>
-                    <label class="ui-radio col-sm-2"><input name="radio1" type="radio" value="Tablet" ng-model="product.product"><span>Tablet</span></label>
-                    <label class="ui-radio col-sm-2"><input name="radio1" type="radio" value="Annet" ng-model="product.product"><span>Annet</span></label>
-                </div>
+                <label for="radio1" class="col-sm-2 text-left">Type</label>
+                
+                <dd>
+                    <label class="ui-radio"><input name="radio1" type="radio" value="Telefon" ng-model="product.product"><span>Telefon</span></label>
+                    <label class="ui-radio"><input name="radio1" type="radio" value="Tablet" ng-model="product.product"><span>Tablet</span></label>
+                    <label class="ui-radio"><input name="radio1" type="radio" value="Annet" ng-model="product.product"><span>Annet</span></label>
+                </dd>
                 <div class="form-group">
                     <label for="" class="col-sm-2">Merke</label>
                     <div class="col-sm-10">
@@ -146,17 +147,17 @@
                                 <th>Namn</th>
                                 <th>Typ</th>
                                 <th>OS</th>
-                                <th>Tillgänglig</th>
+                                <th>Inne?</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="e in list | orderByPriority">
+                            <tr ng-repeat="e in list">
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ e.brand }} {{ e.type }} </td>
                                 <td>{{ e.product }}</td>
                                 <td>{{ e.os }}</td>
-                                <td><span class="label label-success">{{ e.available }}</span></td>
+                                <td><span ng-class="e.available === true ? 'label-success' : e.available === false ? 'label-danger' : 'label'" class="label"><i ng-class="e.available === true ? 'fa fa-check' : e.available === false ? 'fa fa-times' : 'fa'"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -172,21 +173,23 @@
                             <tr>
                                 <th>#</th>
                                 <th>Namn</th>
-                                <th>Typ</th>
-                                <th>OS</th>
-                                <th>Tid på utlån</th>
-                                <th>Lånad av</th>
+                                <!--<th>Typ</th>
+                                <th>OS</th>-->
+                                <th>Tid</th>
+                                <th>Hvem?</th>
+                                <th>Tlf.</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="e in loans | orderByPriority">
+                            <tr ng-repeat="e in loans">
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ e.brand }} {{ e.type }}</td>
-                                <td>{{ e.product }}</td>
-                                <td>{{ e.os }}</td>
+                                <!--<td>{{ e.product }}</td>
+                                <td>{{ e.os }}</td>-->
                                 <td>{{ daydiff(e.date, date) }}</td>
                                 <td>{{ e.loanee }}</td>
+                                <td>{{ e.phonenumber }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -9258,7 +9258,14 @@ button.toast-close-button {
 .top-header .logo a .logo-icon {
   color: #fff;
   margin-right: 12px;
+    
 }
+
+.logo-image {
+    width: 1.8em;
+    height: 1.8em;
+}
+
 .top-header .menu-button {
   display: block;
   position: absolute;
